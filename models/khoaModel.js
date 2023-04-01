@@ -40,17 +40,14 @@ Khoa.khoa_getdetail = function khoa_getdetail(khoa_id, result) {
 };
 /* This is a function to get a list of records from the database. */
 Khoa.khoa_getlist = function khoa_getlist(result) {
-  sql.query(
-    "select * from khoa order by khoa_douutien asc",
-    function (err, res) {
-      if (err) {
-        console.log("error: ", err);
-        result(null, err);
-      } else {
-        result(null, res);
-      }
+  sql.query("select * from khoa order by khoa_ten asc", function (err, res) {
+    if (err) {
+      console.log("error: ", err);
+      result(null, err);
+    } else {
+      result(null, res);
     }
-  );
+  });
 };
 /* This is a function to update a record in the database. */
 Khoa.khoa_update = function khoa_update(khoa_id, khoa, result) {

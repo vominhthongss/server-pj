@@ -7,7 +7,7 @@ var mysql = require("mysql");
 var connection = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "kit@2022A",
+  password: "1234",
   database: "db_sharedoc",
 });
 /* Connecting to the database. */
