@@ -117,6 +117,23 @@ TaiLieu.tailieu_update = function tailieu_update(tailieu_id, tailieu, result) {
     }
   );
 };
+TaiLieu.tailieu_approve = function tailieu_approve(tailieu_id, result) {
+  sql.query(
+    "update tailieu set tailieu_trangthai='đã duyệt' where tailieu_id = ?",
+    [tailieu_id],
+    function (err, res) {
+      if (err) {
+        console.log("error: ", err);
+        result(null, err);
+      } else {
+        res = {
+          tailieu_id: parseInt(tailieu_id),
+        };
+        result(null, res);
+      }
+    }
+  );
+};
 TaiLieu.tailieu_updatetraffic = function tailieu_updatetraffic(
   tailieu_id,
   result

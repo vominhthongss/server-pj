@@ -35,6 +35,14 @@ exports.tailieu_update = function (req, res) {
     res.json(model);
   });
 };
+
+exports.tailieu_approve = function (req, res) {
+  TaiLieu.tailieu_approve(req.params.tailieu_id, function (err, model) {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(model);
+  });
+};
+
 exports.tailieu_updatetraffic = function (req, res) {
   TaiLieu.tailieu_updatetraffic(req.params.tailieu_id, function (err, model) {
     if (err) return res.status(500).json({ error: err.message });

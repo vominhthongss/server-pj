@@ -182,6 +182,7 @@ module.exports = function (app) {
   app
     .route("/taixuongtailieu/:tailieu_id")
     .put(tailieuController.tailieu_updatedowload);
+  app.route("/duyettailieu/:tailieu_id").put(tailieuController.tailieu_approve);
   /* Requiring the khoaController.js file. */
   var loaitailieuController = require("../controllers/loaitailieuController");
   /**
