@@ -7,11 +7,14 @@ var BinhLuan = function () {};
 /* A function to add a new record to the database. */
 BinhLuan.binhluan_add = function binhluan_add(binhluan, result) {
   sql.query(
-    "insert into binhluan (binhluan_noidung,nguoidung_tennguoidung,tailieu_id) values (?,?,?)",
+    "insert into binhluan (binhluan_noidung,nguoidung_tennguoidung,tailieu_id, binhluan_bold, binhluan_italic, binhluan_underline) values (?,?,?,?,?,?)",
     [
       binhluan.binhluan_noidung,
       binhluan.nguoidung_tennguoidung,
       binhluan.tailieu_id,
+      binhluan.binhluan_bold,
+      binhluan.binhluan_italic,
+      binhluan.binhluan_underline,
     ],
     function (err, res) {
       if (err) {
