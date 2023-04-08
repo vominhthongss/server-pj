@@ -289,6 +289,17 @@ module.exports = function (app) {
     .put(loaitailieuController.loaitailieu_update)
     .delete(loaitailieuController.loaitailieu_delete);
 
+var nienkhoaController = require("../controllers/nienkhoaController");
+  app
+    .route("/nienkhoa")
+    .get(nienkhoaController.nienkhoa_getlist)
+    .post(nienkhoaController.nienkhoa_add);
+  app
+    .route("/nienkhoa/:nienkhoa_id")
+    .get(nienkhoaController.nienkhoa_getdetail)
+    .put(nienkhoaController.nienkhoa_update)
+    .delete(nienkhoaController.nienkhoa_delete);
+
   /**
    * @openapi
    * /upload:

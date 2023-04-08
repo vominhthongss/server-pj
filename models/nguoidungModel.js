@@ -59,7 +59,7 @@ NguoiDung.nguoidung_add = function nguoidung_add(nguoidung, result) {
     10,
     function (err, nguoidung_matkhau) {
       sql.query(
-        "INSERT INTO nguoidung(nguoidung_tennguoidung, nguoidung_matkhau, nguoidung_hoten, nguoidung_gioitinh, nguoidung_mail,nguoidung_ngaysinh, nguoidung_anhdaidien) VALUES (?,?,?,?,?,?,?)",
+        "INSERT INTO nguoidung(nguoidung_tennguoidung, nguoidung_matkhau, nguoidung_hoten, nguoidung_gioitinh, nguoidung_mail,nguoidung_ngaysinh, nguoidung_anhdaidien, khoa_id, nienkhoa_id) VALUES (?,?,?,?,?,?,?,?,?)",
         [
           nguoidung.nguoidung_tennguoidung,
           nguoidung_matkhau.toString(),
@@ -68,6 +68,8 @@ NguoiDung.nguoidung_add = function nguoidung_add(nguoidung, result) {
           nguoidung.nguoidung_mail,
           nguoidung.nguoidung_ngaysinh,
           nguoidung.nguoidung_anhdaidien,
+          nguoidung.khoa_id,
+          nguoidung.nienkhoa_id,
         ],
         function (err, res) {
           if (err) {
@@ -83,6 +85,8 @@ NguoiDung.nguoidung_add = function nguoidung_add(nguoidung, result) {
               nguoidung_mail: nguoidung.nguoidung_mail,
               nguoidung_ngaysinh: nguoidung.nguoidung_ngaysinh,
               nguoidung_anhdaidien: nguoidung.nguoidung_anhdaidien,
+              khoa_id: nguoidung.khoa_id,
+              nienkhoa_id: nguoidung.nienkhoa_id,
             };
             result(null, res);
           }
@@ -92,14 +96,17 @@ NguoiDung.nguoidung_add = function nguoidung_add(nguoidung, result) {
   );
 };
 NguoiDung.nguoidung_getlist = function nguoidung_getlist(result) {
-  sql.query("SELECT * FROM nguoidung", function (err, res) {
-    if (err) {
-      console.log("error: ", err);
-      result(null, err);
-    } else {
-      result(null, res);
+  sql.query(
+    "SELECT * FROM nguoidung  as n, khoa as k, nienkhoa as nk where n.khoa_id=k.khoa_id and n.nienkhoa_id=nk.nienkhoa_id",
+    function (err, res) {
+      if (err) {
+        console.log("error: ", err);
+        result(null, err);
+      } else {
+        result(null, res);
+      }
     }
-  });
+  );
 };
 /* This function is used to get the user information. */
 NguoiDung.nguoidung_getdetail = function nguoidung_getdetail(
@@ -107,7 +114,7 @@ NguoiDung.nguoidung_getdetail = function nguoidung_getdetail(
   result
 ) {
   sql.query(
-    "select * from nguoidung where nguoidung_tennguoidung = ? ",
+    "select * from nguoidung as n, khoa as k, nienkhoa as nk where n.khoa_id=k.khoa_id and n.nienkhoa_id=nk.nienkhoa_id and nguoidung_tennguoidung = ? ",
     nguoidung_tennguoidung,
     function (err, res) {
       if (err) {
@@ -121,6 +128,10 @@ NguoiDung.nguoidung_getdetail = function nguoidung_getdetail(
           nguoidung_mail: res[0].nguoidung_mail,
           nguoidung_ngaysinh: res[0].nguoidung_ngaysinh,
           nguoidung_anhdaidien: res[0].nguoidung_anhdaidien,
+          khoa_id: res[0].khoa_id,
+          khoa_ten: res[0].khoa_ten,
+          nienkhoa_id: res[0].nienkhoa_id,
+          nienkhoa_ten: res[0].nienkhoa_ten,
         };
         result(null, res);
       }
@@ -139,14 +150,15 @@ NguoiDung.nguoidung_update = function nguoidung_update(
     10,
     function (err, nguoidung_matkhau) {
       sql.query(
-        "update nguoidung set nguoidung_matkhau=?, nguoidung_hoten = ?,nguoidung_gioitinh=?, nguoidung_mail=?,nguoidung_ngaysinh=?, nguoidung_anhdaidien=? where nguoidung_tennguoidung = ?",
+        "update nguoidung set  nguoidung_hoten = ?,nguoidung_gioitinh=?, nguoidung_mail=?,nguoidung_ngaysinh=?, nguoidung_anhdaidien=?, khoa_id=?, nienkhoa_id=? where nguoidung_tennguoidung = ?",
         [
-          nguoidung_matkhau.toString(),
           nguoidung.nguoidung_hoten,
           nguoidung.nguoidung_gioitinh,
           nguoidung.nguoidung_mail,
           nguoidung.nguoidung_ngaysinh,
           nguoidung.nguoidung_anhdaidien,
+          nguoidung.khoa_id,
+          nguoidung.nienkhoa_id,
           nguoidung_tennguoidung,
         ],
         function (err, res) {
@@ -156,13 +168,13 @@ NguoiDung.nguoidung_update = function nguoidung_update(
           } else {
             res = {
               nguoidung_tennguoidung: nguoidung.nguoidung_tennguoidung,
-              nguoidung_matkhau: nguoidung.nguoidung_matkhau,
-              hashPassword: nguoidung_matkhau.toString(),
               nguoidung_hoten: nguoidung.nguoidung_hoten,
               nguoidung_gioitinh: nguoidung.nguoidung_gioitinh,
               nguoidung_mail: nguoidung.nguoidung_mail,
               nguoidung_ngaysinh: nguoidung.nguoidung_ngaysinh,
               nguoidung_anhdaidien: nguoidung.nguoidung_anhdaidien,
+              khoa_id: nguoidung.khoa_id,
+              nienkhoa_id: nguoidung.nienkhoa_id,
             };
             result(null, res);
           }
@@ -199,48 +211,48 @@ NguoiDung.nguoidung_changepassword = function nguoidung_changepassword(
     }
   );
 };
-NguoiDung.nguoidung_update = function nguoidung_update(
-  nguoidung_tennguoidung,
-  nguoidung,
-  result
-) {
-  bcrypt.hash(
-    nguoidung.nguoidung_matkhau,
-    10,
-    function (err, nguoidung_matkhau) {
-      sql.query(
-        "update nguoidung set nguoidung_matkhau=?, nguoidung_hoten = ?,nguoidung_gioitinh=?, nguoidung_mail=?,nguoidung_ngaysinh=?, nguoidung_anhdaidien=? where nguoidung_tennguoidung = ?",
-        [
-          nguoidung_matkhau.toString(),
-          nguoidung.nguoidung_hoten,
-          nguoidung.nguoidung_gioitinh,
-          nguoidung.nguoidung_mail,
-          nguoidung.nguoidung_ngaysinh,
-          nguoidung.nguoidung_anhdaidien,
-          nguoidung_tennguoidung,
-        ],
-        function (err, res) {
-          if (err) {
-            console.log("error: ", err);
-            result(null, err);
-          } else {
-            res = {
-              nguoidung_tennguoidung: nguoidung.nguoidung_tennguoidung,
-              nguoidung_matkhau: nguoidung.nguoidung_matkhau,
-              hashPassword: nguoidung_matkhau.toString(),
-              nguoidung_hoten: nguoidung.nguoidung_hoten,
-              nguoidung_gioitinh: nguoidung.nguoidung_gioitinh,
-              nguoidung_mail: nguoidung.nguoidung_mail,
-              nguoidung_ngaysinh: nguoidung.nguoidung_ngaysinh,
-              nguoidung_anhdaidien: nguoidung.nguoidung_anhdaidien,
-            };
-            result(null, res);
-          }
-        }
-      );
-    }
-  );
-};
+// NguoiDung.nguoidung_update = function nguoidung_update(
+//   nguoidung_tennguoidung,
+//   nguoidung,
+//   result
+// ) {
+//   bcrypt.hash(
+//     nguoidung.nguoidung_matkhau,
+//     10,
+//     function (err, nguoidung_matkhau) {
+//       sql.query(
+//         "update nguoidung set nguoidung_matkhau=?, nguoidung_hoten = ?,nguoidung_gioitinh=?, nguoidung_mail=?,nguoidung_ngaysinh=?, nguoidung_anhdaidien=? where nguoidung_tennguoidung = ?",
+//         [
+//           nguoidung_matkhau.toString(),
+//           nguoidung.nguoidung_hoten,
+//           nguoidung.nguoidung_gioitinh,
+//           nguoidung.nguoidung_mail,
+//           nguoidung.nguoidung_ngaysinh,
+//           nguoidung.nguoidung_anhdaidien,
+//           nguoidung_tennguoidung,
+//         ],
+//         function (err, res) {
+//           if (err) {
+//             console.log("error: ", err);
+//             result(null, err);
+//           } else {
+//             res = {
+//               nguoidung_tennguoidung: nguoidung.nguoidung_tennguoidung,
+//               nguoidung_matkhau: nguoidung.nguoidung_matkhau,
+//               hashPassword: nguoidung_matkhau.toString(),
+//               nguoidung_hoten: nguoidung.nguoidung_hoten,
+//               nguoidung_gioitinh: nguoidung.nguoidung_gioitinh,
+//               nguoidung_mail: nguoidung.nguoidung_mail,
+//               nguoidung_ngaysinh: nguoidung.nguoidung_ngaysinh,
+//               nguoidung_anhdaidien: nguoidung.nguoidung_anhdaidien,
+//             };
+//             result(null, res);
+//           }
+//         }
+//       );
+//     }
+//   );
+// };
 /* A function that deletes a user from the database. */
 NguoiDung.nguoidung_delete = function nguoidung_delete(
   nguoidung_tennguoidung,
